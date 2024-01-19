@@ -1,4 +1,5 @@
 from robocorp.tasks import task
+from robocorp import browser
 
 @task
 def robot_order():
@@ -10,5 +11,10 @@ def robot_order():
     Embeds the screenshot to the receipt and
     creates a ZIP archive of the receipts and images.
     """
-    message = "Hello"
-    message = message + " World!"
+    browser.configure(
+        slowmo = 500,
+    )
+    open_order_website()
+
+def open_order_website():
+    browser.goto("https://robotsparebinindustries.com/#/robot-order")
