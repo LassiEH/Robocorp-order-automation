@@ -18,6 +18,8 @@ def robot_order():
     )
     open_order_website()
     orders = get_orders()
+    loop(orders)
+
 
 def open_order_website():
     browser.goto("https://robotsparebinindustries.com/#/robot-order")
@@ -30,6 +32,11 @@ def get_orders():
         "orders.csv", columns=["Order number", "Head", "Body", "Legs", "Address"]
     )
 
+    return orders
+
+def loop(orders):
     for order in orders:
         message = order
+
+
 
