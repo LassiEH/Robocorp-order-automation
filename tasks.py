@@ -18,7 +18,8 @@ def robot_order():
     )
     open_order_website()
     orders = get_orders()
-    loop(orders)
+    close_annoying_modal()
+    loop_orders(orders)
 
 
 def open_order_website():
@@ -34,9 +35,22 @@ def get_orders():
 
     return orders
 
-def loop(orders):
+def close_annoying_modal():
+    page = browser.page()
+    page.click("button:text('OK')")
+
+def loop_orders(orders):
     for order in orders:
         message = order
+        fill_the_order(order)
+
+
+def fill_the_order(order_info):
+    page = browser.page()
+    page.select_option("#head", order_info["Head"])
+
+    text = "id-body-" + str(order_info["Body"])
+    message = text
 
 
 
