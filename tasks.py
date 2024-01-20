@@ -2,6 +2,7 @@ from robocorp.tasks import task
 from robocorp import browser
 from RPA.HTTP import HTTP
 from RPA.Tables import Tables
+from robot.libraries.BuiltIn import BuiltIn
 
 @task
 def robot_order():
@@ -50,7 +51,7 @@ def fill_the_order(order_info):
     page.select_option("#head", order_info["Head"])
 
     text = "id-body-" + str(order_info["Body"])
-    message = text
-
+    
+    page.click(f"id={text}")
 
 
