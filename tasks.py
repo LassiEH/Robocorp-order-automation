@@ -51,7 +51,8 @@ def fill_the_order(order_info):
     page.select_option("#head", order_info["Head"])
 
     text = "id-body-" + str(order_info["Body"])
-    
     page.click(f"id={text}")
+    
+    page.fill("//input[@type='number']", order_info["Legs"])
 
 
