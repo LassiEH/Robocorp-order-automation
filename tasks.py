@@ -69,10 +69,14 @@ def fill_the_order(order_info):
 
     page.click("button:text('Order')")
 
-    #if page.locator('role=alert alert-danger'):
-    #    page.click("button:text('Order')")
+    while page.query_selector('div.alert.alert-danger[role="alert"]'):
+        page.click("button:text('Order')")
+
+    #Lisää ratkaisu tilanteeseen, jossa tilaus ei mene läpi
 
     page.click("button:text('Order another robot')")
 
     close_annoying_modal()
+
+
 
