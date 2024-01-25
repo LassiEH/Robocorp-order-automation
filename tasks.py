@@ -15,8 +15,9 @@ def robot_order():
     Embeds the screenshot to the receipt and
     creates a ZIP archive of the receipts and images.
     """
+    
     browser.configure(
-        slowmo = 500,
+        slowmo = 10,
     )
     open_order_website()
     orders = get_orders()
@@ -70,6 +71,7 @@ def fill_the_order(order_info):
 
     page.click("button:text('Order')")
 
+    #Solves the occasional error
     while page.query_selector('div.alert.alert-danger[role="alert"]'):
         page.click("button:text('Order')")
 
@@ -77,6 +79,11 @@ def fill_the_order(order_info):
     store_receipt_as_pdf(order_info["Order number"])
     #Save the png
     screenshot_robot(order_info["Order number"])
+
+    #Embed the png into the pdf
+    pdf_path = "output/receipts/order_receipt_" + str(order_info["Order number"]) + ".pdf"
+    png_path = "output/receipts/order_picture_" + str(order_info["Order number"]) + ".png"
+    embed_screenshot_to_receipt(png_path, pdf_path)
 
     page.click("button:text('Order another robot')")
 
@@ -97,3 +104,14 @@ def screenshot_robot(order_number):
 
     output_directory = "output/receipts/order_picture_" + str(order_number) + ".png"
     page.locator("#robot-preview").screenshot(path=output_directory)
+
+def embed_screenshot_to_receipt(screenshot, pdffile):
+    """Embeds the screenshot to the end of the receipt"""
+    pdf = PDF()
+    
+    pdf.add_watermark_image_to_pdf(
+        image_path = screenshot,
+        source_path = pdffile,
+        output_path = pdffile,
+    )
+    
