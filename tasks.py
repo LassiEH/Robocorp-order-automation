@@ -3,6 +3,7 @@ from robocorp import browser
 from RPA.HTTP import HTTP
 from RPA.Tables import Tables
 from RPA.PDF import PDF
+from RPA.Archive import Archive
 from robot.libraries.BuiltIn import BuiltIn
 
 @task
@@ -10,10 +11,11 @@ def robot_order():
     """
     Orders robots from the RobotSpareBin Industries
     website. 
-    It saves the order HTML receipt as a PDF file,
+    It saves the order HTML-element receipt as a PDF file,
     saves the screenshot of the robot,
     Embeds the screenshot to the receipt and
-    creates a ZIP archive of the receipts and images.
+    creates a ZIP archive of the receipts embedded with
+    the images.
     """
     
     browser.configure(
@@ -23,6 +25,7 @@ def robot_order():
     orders = get_orders()
     close_annoying_modal()
     loop_orders(orders)
+    archive_receipts()
 
 
 def open_order_website():
@@ -82,7 +85,7 @@ def fill_the_order(order_info):
 
     #Embed the png into the pdf
     pdf_path = "output/receipts/order_receipt_" + str(order_info["Order number"]) + ".pdf"
-    png_path = "output/receipts/order_picture_" + str(order_info["Order number"]) + ".png"
+    png_path = "output/pictures/order_picture_" + str(order_info["Order number"]) + ".png"
     embed_screenshot_to_receipt(png_path, pdf_path)
 
     page.click("button:text('Order another robot')")
@@ -102,7 +105,7 @@ def screenshot_robot(order_number):
     """Stores the receipt as a png file"""
     page = browser.page()
 
-    output_directory = "output/receipts/order_picture_" + str(order_number) + ".png"
+    output_directory = "output/pictures/order_picture_" + str(order_number) + ".png"
     page.locator("#robot-preview").screenshot(path=output_directory)
 
 def embed_screenshot_to_receipt(screenshot, pdffile):
@@ -115,3 +118,7 @@ def embed_screenshot_to_receipt(screenshot, pdffile):
         output_path = pdffile,
     )
     
+def archive_receipts():
+    """Creates a zip file of the receipts"""
+    lib = Archive()
+    lib.archive_folder_with_zip('output/receipts', 'orders.zip', recursive=True)
