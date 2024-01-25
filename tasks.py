@@ -2,6 +2,7 @@ from robocorp.tasks import task
 from robocorp import browser
 from RPA.HTTP import HTTP
 from RPA.Tables import Tables
+from RPA.PDF import PDF
 from robot.libraries.BuiltIn import BuiltIn
 
 @task
@@ -72,11 +73,27 @@ def fill_the_order(order_info):
     while page.query_selector('div.alert.alert-danger[role="alert"]'):
         page.click("button:text('Order')")
 
-    #Lisää ratkaisu tilanteeseen, jossa tilaus ei mene läpi
+    #Save the pdf
+    store_receipt_as_pdf(order_info["Order number"])
+    #Save the png
+    screenshot_robot(order_info["Order number"])
 
     page.click("button:text('Order another robot')")
 
     close_annoying_modal()
 
+def store_receipt_as_pdf(order_number):
+    """Stores the receipt as a pdf file"""
+    page = browser.page()
 
+    robot_order_html = page.locator("#order-completion").inner_html()
+    pdf = PDF()
+    output_dir = "output/receipts/order_receipt_" + str(order_number) + ".pdf"
+    pdf.html_to_pdf(robot_order_html, output_dir)
 
+def screenshot_robot(order_number):
+    """Stores the receipt as a png file"""
+    page = browser.page()
+
+    output_directory = "output/receipts/order_picture_" + str(order_number) + ".png"
+    page.locator("#robot-preview").screenshot(path=output_directory)
